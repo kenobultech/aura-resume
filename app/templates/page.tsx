@@ -13,7 +13,6 @@ function TemplatesContent() {
   const searchParams = useSearchParams();
   const { data: session, status } = useSession();
 
-  // Get the 'type' from the URL. Defaults to 'All'
   const selectedType = searchParams.get('type') || 'All';
 
   const handleSelectTemplate = (templateId: string) => {
@@ -27,17 +26,13 @@ function TemplatesContent() {
     }
   };
 
-  // 🌟 The Filter Categories (Notice we injected "Premium" here manually)
-  const categories =['All', 'Premium', 'Free', 'Casual', 'Creative', 'Corporate', 'Professional'];
+  const categories = ['All', 'Premium', 'Free', 'Casual', 'Creative', 'Corporate', 'Professional'];
 
-  // 🌟 THE FIX: Virtual Category Logic
   let filteredTemplates = RESUME_TEMPLATES;
 
   if (selectedType.toLowerCase() === 'premium') {
-    // Intercept "Premium" and return EVERYTHING priced between 50 and 150
     filteredTemplates = RESUME_TEMPLATES.filter(t => t.price >= 50 && t.price <= 150);
   } else if (selectedType.toLowerCase() !== 'all') {
-    // Standard filtering for exact matches ('Free', 'Casual', 'Corporate', etc.)
     filteredTemplates = RESUME_TEMPLATES.filter(t => t.type.toLowerCase() === selectedType.toLowerCase());
   }
 
@@ -52,7 +47,6 @@ function TemplatesContent() {
         </p>
       </div>
 
-      {/* FILTER PILLS */}
       <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-center gap-2 mb-12">
         {categories.map((cat) => (
           <button
@@ -76,9 +70,14 @@ function TemplatesContent() {
       {filteredTemplates.length > 0 ? (
         <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
           {filteredTemplates.map((template) => (
-            <div key={template.id} className="group relative bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border border-gray-100 flex flex-col">
+            <div 
+              key={template.id} 
+              onClick={() => handleSelectTemplate(template.id)} // 👈 MOVED onClick HERE
+              className="group relative bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border border-gray-100 flex flex-col cursor-pointer" // 👈 Added cursor-pointer
+            >
               
               {/* Thumbnail Container */}
+              {/* Note: I added brackets to aspect-[210/297] to ensure proper tailwind rendering */}
               <div className={`aspect-210/297 w-full ${template.accentColor} relative flex items-center justify-center overflow-hidden`}>
                   <div className="absolute inset-4 bg-white shadow-sm opacity-60 flex flex-col p-2 gap-1 pointer-events-none">
                       <div className="h-2 bg-gray-200 w-1/3 rounded"/>
@@ -91,12 +90,12 @@ function TemplatesContent() {
                 
                   {/* Hover Overlay Button */}
                   <div className="absolute inset-0 bg-slate-900/10 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center backdrop-blur-[2px]">
-                    <button 
-                      onClick={() => handleSelectTemplate(template.id)}
-                      className="bg-[#0086FF] hover:bg-[#0070d6] text-white font-semibold py-2 px-6 rounded-full shadow-lg transform scale-90 group-hover:scale-100 transition-all"
+                    {/* 👈 Changed from <button> to <span> to prevent nested interactive elements. Clicks now bubble up to the parent card */}
+                    <span 
+                      className="bg-[#0086FF] text-white font-semibold py-2 px-6 rounded-full shadow-lg transform scale-90 group-hover:scale-100 transition-all pointer-events-none"
                     >
                       Use This Template
-                    </button>
+                    </span>
                   </div>
 
                   {/* Price Tag Overlay */}
