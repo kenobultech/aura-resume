@@ -9,9 +9,7 @@ import { Menu, X, ChevronDown, User, LogOut, CreditCard } from "lucide-react";
 import { usePathname } from 'next/navigation';
 
 export default function Navbar() {
-
-
-   const pathname = usePathname();
+  const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
 
@@ -34,15 +32,12 @@ export default function Navbar() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  
-  
- if (pathname.startsWith('/preview') || pathname.startsWith('/builder')) return null;
+  if (pathname.startsWith('/preview') || pathname.startsWith('/builder')) return null;
 
   return (
     <>
       {/* 
         FLOATING PILL NAVBAR 
-        Positioned absolutely/fixed at the top, centered, with rounded full corners
       */}
       <nav className="fixed top-4 left-1/2 -translate-x-1/2 w-[95%] max-w-6xl z-50 bg-white/95 backdrop-blur-md shadow-lg shadow-black/5 border border-gray-100 rounded-full px-4 md:px-8 py-3 transition-all">
         <div className="flex justify-between items-center w-full">
@@ -124,7 +119,6 @@ export default function Navbar() {
               Pricing
             </Link>
 
-            {/* CHANGE THIS: href="#faq" -> href="/#faq" */}
             <Link
               href="/#faq"
               className="text-black hover:text-blue-600 text-sm font-semibold transition-colors"
@@ -139,7 +133,7 @@ export default function Navbar() {
             </Link>
           </div>
 
-          {/* 3. AUTH SECTION & CTA */}
+          {/* 3. AUTH SECTION & CTA (DESKTOP) */}
           <div className="hidden md:flex items-center space-x-4">
             {isLoading ? (
               <div className="flex items-center gap-2">
@@ -158,7 +152,7 @@ export default function Navbar() {
                       alt="User"
                       width={32}
                       height={32}
-                      className="rounded-full"
+                      className="rounded-full w-8 h-8 object-cover"
                     />
                   ) : (
                     <div className="w-8 h-8 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center">
@@ -172,7 +166,7 @@ export default function Navbar() {
                 </button>
 
                 {isProfileOpen && (
-                  <div className="absolute top-full right-0 mt-4 w-60 bg-white rounded-2xl shadow-xl border border-gray-100 py-2">
+                  <div className="absolute top-full right-0 mt-4 w-60 bg-white rounded-2xl shadow-xl border border-gray-100 py-2 z-50">
                     <div className="px-5 py-3 border-b border-gray-50 mb-2">
                       <p className="text-xs text-gray-500">Signed in as</p>
                       <p className="text-sm font-bold text-slate-900 truncate mt-0.5">
@@ -214,18 +208,47 @@ export default function Navbar() {
             )}
           </div>
 
-          {/* 4. MOBILE HAMBURGER */}
+          {/* 4. MOBILE HAMBURGER / PROFILE TOGGLE */}
           <div className="md:hidden flex items-center">
-            <button
-              onClick={() => setIsOpen(!isOpen)}
-              className="text-slate-900 p-2 focus:outline-none"
-            >
-              {isOpen ? (
-                <X className="h-6 w-6" />
-              ) : (
-                <Menu className="h-6 w-6" />
-              )}
-            </button>
+            {isLoading ? (
+              <div className="w-8 h-8 bg-gray-100 rounded-full animate-pulse"></div>
+            ) : session?.user ? (
+              /* If Logged In: Show Profile Picture + Chevron Down instead of Hamburger */
+              <button
+                onClick={() => setIsOpen(!isOpen)}
+                className="flex items-center gap-1.5 pl-1.5 pr-2 py-1 rounded-full border border-gray-200 hover:bg-gray-50 focus:outline-none transition-colors"
+              >
+                {session.user.image ? (
+                  <Image
+                    src={session.user.image}
+                    alt="User"
+                    width={28}
+                    height={28}
+                    className="rounded-full w-7 h-7 object-cover"
+                  />
+                ) : (
+                  <div className="w-7 h-7 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center">
+                    <User size={16} />
+                  </div>
+                )}
+                <ChevronDown 
+                  size={16} 
+                  className={`text-slate-600 transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`} 
+                />
+              </button>
+            ) : (
+              /* If Not Logged In: Show Standard Hamburger */
+              <button
+                onClick={() => setIsOpen(!isOpen)}
+                className="text-slate-900 p-2 focus:outline-none"
+              >
+                {isOpen ? (
+                  <X className="h-6 w-6" />
+                ) : (
+                  <Menu className="h-6 w-6" />
+                )}
+              </button>
+            )}
           </div>
         </div>
       </nav>
@@ -269,7 +292,7 @@ export default function Navbar() {
             >
               FAQ
             </Link>
-              <Link
+            <Link
               href="/resume-improver"
               onClick={() => setIsOpen(false)}
               className="block text-lg font-semibold text-black hover:text-blue-600"
