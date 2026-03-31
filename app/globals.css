@@ -24,3 +24,24 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* --- ADDED: PDF EXPORT (PRINT) STYLES --- */
+@media print {
+  html, body {
+    background-color: white !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    height: 100% !important;
+  }
+
+  /* Completely remove all shadows, as they render like smudged gradients in PDFs */
+  * {
+    box-shadow: none !important;
+  }
+
+  /* Ensure background colors and images from Tailwind print properly */
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+}
