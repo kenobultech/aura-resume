@@ -7,13 +7,16 @@ import { Resume } from "@/models/Resume";
 import { User } from "@/models/User";
 
 const connectDB = async () => {
-  const readyState = mongoose.connections[0].readyState;
-  if (readyState === 1) return;
-  if (readyState === 2) {
-    await mongoose.connection.asPromise();
-    return;
+  if (mongoose.connection.readyState >= 1) return;
+  
+  try {
+    console.log("Attempting to connect to MongoDB...");
+    await mongoose.connect(process.env.MONGODB_URI!);
+    console.log("MongoDB Connected Successfully!");
+  } catch (err) {
+    console.error("CRITICAL CONNECTION ERROR:", err);
+    throw err;
   }
-  await mongoose.connect(process.env.MONGODB_URI!);
 };
 
 // GET: Load the resume
