@@ -18,9 +18,10 @@ export const TemplateFree2 = ({ data }: { data: ResumeData }) => {
   const InfoRow = ({ label, value }: { label: string, value: string | undefined }) => {
     if (!value) return null;
     return (
-      <div className="flex text-sm mb-2">
-        <span className="w-48 font-bold shrink-0" style={{ color: themeColor }}>{label}</span>
-        <span className="w-6 text-center font-bold" style={{ color: themeColor }}>:</span>
+      <div className="flex text-[12px] mb-1">
+        {/* Reduced width from w-48 to w-32 to save horizontal space */}
+        <span className="w-32 font-bold shrink-0 text-[11px] uppercase pt-0.5" style={{ color: themeColor }}>{label}</span>
+        <span className="w-4 text-center font-bold" style={{ color: themeColor }}>:</span>
         <span className="flex-1 text-slate-900 font-medium wrap-break-word">{value}</span>
       </div>
     );
@@ -29,43 +30,50 @@ export const TemplateFree2 = ({ data }: { data: ResumeData }) => {
   const renderBullets = (text: string) => {
     if (!text) return null;
     return text.split('\n').map((line, index) => (
-      <div key={index} className="flex items-start gap-2 mb-1 pl-4">
-        <span className="mt-2 w-1 h-1 rounded-full shrink-0 opacity-60" style={{ backgroundColor: themeColor }}></span>
-        <span className="text-[13px]">{line}</span>
+      <div key={index} className="flex items-start gap-2 mb-0.5 pl-4">
+        <span className="mt-1.5 w-1 h-1 rounded-full shrink-0 opacity-60" style={{ backgroundColor: themeColor }}></span>
+        <span className="text-[12px] leading-relaxed">{line}</span>
       </div>
     ));
   };
 
   return (
-    <div className="w-full min-h-full bg-white text-slate-900 font-serif p-8 mx-auto shadow-2xl flex flex-col">
+    /* 1. FIXED A4 STANDARDS & REMOVED shrink-0 */
+    <div className="w-[210mm] min-h-[297mm] bg-white text-slate-900 font-serif p-[10mm] mx-auto flex flex-col relative box-border overflow-visible break-words">
       
+      {/* 2. PRINT STYLES */}
+      <style dangerouslySetInnerHTML={{ __html: `
+        @media print {
+          @page { size: A4; margin: 0 !important; }
+          body { margin: 0 !important; padding: 0 !important; -webkit-print-color-adjust: exact; }
+        }
+        .resume-section { break-inside: avoid; page-break-inside: avoid; }
+      `}} />
+
       {/* Outer Border Box */}
       <div 
         className="border-2 h-full p-8 flex flex-col relative flex-1"
         style={{ borderColor: themeColor }}
       >
         
-        {/* --- TOP HEADER --- */}
-        <div className="flex justify-between items-start mb-4 shrink-0">
-            {/* Left: Contact Info */}
-            <div className="text-sm font-bold leading-relaxed">
-                <h1 className="text-xl uppercase mb-1 tracking-tighter" style={{ color: themeColor }}>
+        {/* --- TOP HEADER (COMPACT) --- */}
+        <div className="flex justify-between items-start mb-3 resume-section">
+            <div className="text-[12px] font-bold leading-tight">
+                <h1 className="text-2xl uppercase mb-1 tracking-tight" style={{ color: themeColor }}>
                     {personalInfo.firstName} {personalInfo.lastName}
                 </h1>
-                <p className="font-medium text-slate-800 max-w-[300px]">{personalInfo.address}</p>
-                {(personalInfo.city || personalInfo.country) && (
-                    <p className="font-medium text-slate-800">
-                        {personalInfo.city}{personalInfo.city && personalInfo.country ? ', ' : ''}{personalInfo.country}
-                    </p>
-                )}
-                <p className="font-medium text-slate-800 mt-1">Contact no.: {personalInfo.phone}</p>
-                <p className="font-medium text-slate-800">Email: {personalInfo.email}</p>
+                <p className="font-medium text-slate-700 max-w-[400px]">
+                    {personalInfo.address} {personalInfo.city && `| ${personalInfo.city}, ${personalInfo.country}`}
+                </p>
+                <div className="flex gap-4 mt-1">
+                    <p className="font-medium text-slate-800">Tel: {personalInfo.phone}</p>
+                    <p className="font-medium text-slate-800">Email: {personalInfo.email}</p>
+                </div>
             </div>
 
-            {/* Right: RESUME Title */}
             <div>
                 <h2 
-                    className="text-3xl font-bold uppercase border-b-4 inline-block tracking-[0.2em] px-2"
+                    className="text-2xl font-bold uppercase border-b-4 inline-block tracking-[0.1em] px-2"
                     style={{ color: themeColor, borderColor: themeColor }}
                 >
                     Resume
@@ -73,82 +81,65 @@ export const TemplateFree2 = ({ data }: { data: ResumeData }) => {
             </div>
         </div>
 
-        {/* Thick Divider Line */}
-        <div className="w-full h-[3px] mb-6 shrink-0" style={{ backgroundColor: themeColor }}></div>
+        <div className="w-full h-[2px] mb-4" style={{ backgroundColor: themeColor }}></div>
 
         {/* --- OBJECTIVES --- */}
         {personalInfo.summary && (
-            <div className="mb-6 shrink-0">
-                <h3 
-                    className="text-md font-bold uppercase underline decoration-2 underline-offset-4 mb-3"
-                    style={{ color: themeColor, textDecorationColor: themeColor }}
-                >
+            <div className="mb-4 resume-section">
+                <h3 className="text-sm font-bold uppercase underline decoration-2 underline-offset-4 mb-2" style={{ color: themeColor, textDecorationColor: themeColor }}>
                     Objectives
                 </h3>
-                <p className="text-sm text-justify leading-relaxed font-medium text-slate-800">
+                <p className="text-[12px] text-justify leading-relaxed font-medium text-slate-800">
                     {personalInfo.summary}
                 </p>
             </div>
         )}
 
-        {/* --- PERSONAL INFORMATION --- */}
-        <div className="mb-6 shrink-0">
-            <h3 
-                className="text-md font-bold uppercase underline decoration-2 underline-offset-4 mb-4"
-                style={{ color: themeColor, textDecorationColor: themeColor }}
-            >
+        {/* --- PERSONAL INFORMATION (GRID OPTIMIZED) --- */}
+        <div className="mb-4 resume-section">
+            <h3 className="text-sm font-bold uppercase underline decoration-2 underline-offset-4 mb-3" style={{ color: themeColor, textDecorationColor: themeColor }}>
                 Personal Information
             </h3>
-            <div className="pl-1">
-                <InfoRow label="Name" value={`${personalInfo.firstName} ${personalInfo.lastName}`} />
+            {/* Switched to 2-column grid to save massive vertical space */}
+            <div className="grid grid-cols-2 gap-x-6 pl-1">
                 <InfoRow label="Nationality" value={personalInfo.country} />
                 {languages && languages.length > 0 && (
-                     <InfoRow label="Languages Known" value={languages.join(", ")} />
+                     <InfoRow label="Languages" value={languages.join(", ")} />
                 )}
-                <InfoRow label="LinkedIn" value={personalInfo.linkedin} />
-                <InfoRow label="Website/Portfolio" value={personalInfo.website} />
-                <InfoRow label="Current Address" value={personalInfo.address} />
+                <InfoRow label="LinkedIn" value={personalInfo.linkedin?.replace('https://', '')} />
+                <InfoRow label="Website" value={personalInfo.website?.replace('https://', '')} />
             </div>
         </div>
 
-        {/* --- QUALIFICATION (Education) --- */}
+        {/* --- QUALIFICATIONS (Education) --- */}
         {education && education.length > 0 && (
-            <div className="mb-6 shrink-0">
-                <h3 
-                    className="text-md font-bold uppercase underline decoration-2 underline-offset-4 mb-3"
-                    style={{ color: themeColor, textDecorationColor: themeColor }}
-                >
+            <div className="mb-4 resume-section">
+                <h3 className="text-sm font-bold uppercase underline decoration-2 underline-offset-4 mb-2" style={{ color: themeColor, textDecorationColor: themeColor }}>
                     Qualifications
                 </h3>
-                <ul className="text-sm font-medium text-slate-800 space-y-2">
+                <ul className="text-[12px] font-medium text-slate-800 space-y-1">
                     {education.map((edu) => (
-                        <li key={edu.id}>
-                            <div className="flex items-start gap-2">
-                                <span className="mt-1.5 w-1.5 h-1.5 rounded-full shrink-0" style={{ backgroundColor: themeColor }}></span>
-                                <span><span className="font-bold">{edu.degree}</span> from {edu.school} <span className="italic text-slate-600">({edu.startDate} - {edu.endDate})</span></span>
-                            </div>
-                            {edu.description && <div className="pl-4 mt-1 opacity-80 italic text-xs">{edu.description}</div>}
+                        <li key={edu.id} className="flex items-start gap-2">
+                            <span className="mt-1.5 w-1.5 h-1.5 rounded-full shrink-0" style={{ backgroundColor: themeColor }}></span>
+                            <span><span className="font-bold">{edu.degree}</span> — {edu.school} <span className="italic text-slate-500 text-[11px]">({edu.startDate} - {edu.endDate})</span></span>
                         </li>
                     ))}
                 </ul>
             </div>
         )}
 
-        {/* --- WORK EXPERIENCE --- */}
+        {/* --- EXPERIENCE --- */}
         {experience && experience.length > 0 && (
-            <div className="mb-6 shrink-0">
-                <h3 
-                    className="text-md font-bold uppercase underline decoration-2 underline-offset-4 mb-3"
-                    style={{ color: themeColor, textDecorationColor: themeColor }}
-                >
-                    Experience:-
+            <div className="mb-4 resume-section">
+                <h3 className="text-sm font-bold uppercase underline decoration-2 underline-offset-4 mb-2" style={{ color: themeColor, textDecorationColor: themeColor }}>
+                    Experience
                 </h3>
-                <ul className="text-sm font-medium text-slate-800 space-y-4">
+                <ul className="text-[12px] font-medium text-slate-800 space-y-3">
                     {experience.map((exp) => (
                         <li key={exp.id}>
-                            <div className="flex items-start gap-2">
+                            <div className="flex items-start gap-2 mb-1">
                                 <span className="mt-1.5 w-1.5 h-1.5 rounded-full shrink-0" style={{ backgroundColor: themeColor }}></span>
-                                <span><span className="font-bold uppercase">{exp.jobTitle}</span> at {exp.employer} <span className="italic text-slate-600">({exp.startDate} - {exp.endDate})</span></span>
+                                <span><span className="font-bold uppercase">{exp.jobTitle}</span> at {exp.employer} <span className="italic text-slate-500 text-[11px]">({exp.startDate} - {exp.endDate})</span></span>
                             </div>
                             {renderBullets(exp.description)}
                         </li>
@@ -157,23 +148,19 @@ export const TemplateFree2 = ({ data }: { data: ResumeData }) => {
             </div>
         )}
 
-        {/* --- KEY PROJECTS --- */}
+        {/* --- PROJECTS --- */}
         {projects && projects.length > 0 && (
-            <div className="mb-6 shrink-0">
-                <h3 
-                    className="text-md font-bold uppercase underline decoration-2 underline-offset-4 mb-3"
-                    style={{ color: themeColor, textDecorationColor: themeColor }}
-                >
-                    Key Projects:-
+            <div className="mb-4 resume-section">
+                <h3 className="text-sm font-bold uppercase underline decoration-2 underline-offset-4 mb-2" style={{ color: themeColor, textDecorationColor: themeColor }}>
+                    Key Projects
                 </h3>
-                <ul className="text-sm font-medium text-slate-800 space-y-4">
+                <ul className="text-[12px] font-medium text-slate-800 space-y-3">
                     {projects.map((proj) => (
                         <li key={proj.id}>
                             <div className="flex items-start gap-2">
                                 <span className="mt-1.5 w-1.5 h-1.5 rounded-full shrink-0" style={{ backgroundColor: themeColor }}></span>
-                                <span><span className="font-bold uppercase">{proj.projectName}</span> <span className="italic text-slate-600">({proj.startDate} - {proj.endDate})</span></span>
+                                <span><span className="font-bold uppercase">{proj.projectName}</span> <span className="italic text-slate-500 text-[11px]">({proj.startDate} - {proj.endDate})</span></span>
                             </div>
-                            {proj.link && <div className="pl-4 text-[11px] text-blue-600 underline">{proj.link}</div>}
                             {renderBullets(proj.description)}
                         </li>
                     ))}
@@ -181,39 +168,16 @@ export const TemplateFree2 = ({ data }: { data: ResumeData }) => {
             </div>
         )}
 
-        {/* --- CERTIFICATIONS --- */}
-        {certificates && certificates.length > 0 && (
-            <div className="mb-6 shrink-0">
-                <h3 
-                    className="text-md font-bold uppercase underline decoration-2 underline-offset-4 mb-3"
-                    style={{ color: themeColor, textDecorationColor: themeColor }}
-                >
-                    Additional Training:-
-                </h3>
-                <ul className="text-sm font-medium text-slate-800 space-y-2">
-                    {certificates.map((cert) => (
-                        <li key={cert.id} className="flex items-start gap-2">
-                            <span className="mt-1.5 w-1.5 h-1.5 rounded-full shrink-0" style={{ backgroundColor: themeColor }}></span>
-                            <span><span className="font-bold">{cert.name}</span> by {cert.issuer} <span className="text-slate-500">({cert.date})</span></span>
-                        </li>
-                    ))}
-                </ul>
-            </div>
-        )}
-
-        {/* --- OTHER SKILL --- */}
+        {/* --- OTHER SKILLS (SPACE SAVER) --- */}
         {skills && skills.length > 0 && (
-            <div className="mb-6 shrink-0">
-                <h3 
-                    className="text-md font-bold uppercase underline decoration-2 underline-offset-4 mb-3"
-                    style={{ color: themeColor, textDecorationColor: themeColor }}
-                >
-                    Other Skill
+            <div className="mb-4 resume-section">
+                <h3 className="text-sm font-bold uppercase underline decoration-2 underline-offset-4 mb-2" style={{ color: themeColor, textDecorationColor: themeColor }}>
+                    Skills & Competencies
                 </h3>
-                <div className="flex flex-wrap gap-x-6 gap-y-2 pl-4">
+                <div className="flex flex-wrap gap-x-4 gap-y-1 pl-4">
                     {skills.map((skill, i) => (
-                        <div key={i} className="flex items-center gap-2 text-sm font-medium text-slate-800">
-                            <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ backgroundColor: themeColor }}></span>
+                        <div key={i} className="flex items-center gap-2 text-[12px] font-medium text-slate-800">
+                            <span className="w-1 h-1 rounded-full shrink-0" style={{ backgroundColor: themeColor }}></span>
                             <span>{skill}</span>
                         </div>
                     ))}
@@ -221,30 +185,15 @@ export const TemplateFree2 = ({ data }: { data: ResumeData }) => {
         </div>
         )}
 
-        {/* --- HOBBY --- */}
-        {hobbies && hobbies.length > 0 && (
-            <div className="mb-8 shrink-0">
-                <h3 
-                    className="text-md font-bold uppercase underline decoration-2 underline-offset-4 mb-3"
-                    style={{ color: themeColor, textDecorationColor: themeColor }}
-                >
-                    Hobby:-
-                </h3>
-                <div className="flex flex-wrap gap-x-4 pl-4 text-sm font-medium text-slate-800 italic">
-                    {hobbies.join(" • ")}
-                </div>
+        {/* --- FOOTER (COMPACTED) --- */}
+        <div className="mt-auto pt-6 flex justify-between items-end resume-section">
+            <div className="text-[11px] font-bold space-y-2" style={{ color: themeColor }}>
+                <p>Place: <span className="font-medium text-slate-800 ml-1">{personalInfo.city || "Nairobi, Kenya"}</span></p>
+                <p>Date: <span className="inline-block w-24 border-b ml-1" style={{ borderColor: themeColor }}></span></p>
             </div>
-        )}
-
-        {/* --- FOOTER (Date / Place / Sign) --- */}
-        <div className="mt-auto pt-10 flex justify-between items-end shrink-0">
-            <div className="text-sm font-bold space-y-4" style={{ color: themeColor }}>
-                <p>Date: <span className="inline-block w-32 border-b" style={{ borderColor: themeColor }}></span></p>
-                <p>Place: <span className="font-medium text-slate-800">{personalInfo.city || "Not Specified"}</span></p>
-            </div>
-            <div className="text-sm font-bold text-center" style={{ color: themeColor }}>
-                <div className="w-48 border-b mb-2 opacity-30" style={{ borderColor: themeColor }}></div>
-                <p className="uppercase tracking-widest">({personalInfo.firstName} {personalInfo.lastName})</p>
+            <div className="text-[11px] font-bold text-center" style={{ color: themeColor }}>
+                <div className="w-32 border-b mb-1 opacity-30 mx-auto" style={{ borderColor: themeColor }}></div>
+                <p className="uppercase tracking-widest text-[10px]">({personalInfo.firstName} {personalInfo.lastName})</p>
             </div>
         </div>
 

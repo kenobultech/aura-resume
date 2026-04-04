@@ -1,7 +1,7 @@
 // components/templates/TemplateBasic2.tsx
 import React from 'react';
 import { ResumeData } from './ResumeTypes';
-import { Mail, Phone, MapPin, User, Linkedin, Globe, Award, Languages } from 'lucide-react';
+import { Mail, Phone, MapPin, User, Linkedin, Globe, Award } from 'lucide-react';
 
 export const TemplateBasic2 = ({ data }: { data: ResumeData }) => {
   const { 
@@ -27,8 +27,30 @@ export const TemplateBasic2 = ({ data }: { data: ResumeData }) => {
   };
 
   return (
-    <div className="w-full min-h-full bg-white text-slate-800 font-sans shadow-2xl mx-auto overflow-hidden flex flex-col">
+    /* 1. FIXED DIMENSIONS: Changed px logic to 210mm x 297mm and removed overflow-hidden */
+    <div className="w-[210mm] min-h-[297mm] bg-white text-slate-800 font-sans mx-auto flex flex-col relative box-border overflow-visible break-words">
       
+      {/* 2. PRINT SHIELD: Ensures the PDF engine respects the layout exactly */}
+      <style dangerouslySetInnerHTML={{ __html: `
+        @media print {
+          @page { 
+            size: A4; 
+            margin: 0 !important; 
+          }
+          body { 
+            margin: 0 !important; 
+            padding: 0 !important; 
+            -webkit-print-color-adjust: exact; 
+          }
+        }
+        
+        /* Prevents content from being cut awkwardly between pages */
+        .resume-section {
+          break-inside: avoid;
+          page-break-inside: avoid;
+        }
+      `}} />
+
       {/* --- HEADER SECTION --- */}
       <div className="relative h-48 mb-4 shrink-0">
         <div 
@@ -98,9 +120,9 @@ export const TemplateBasic2 = ({ data }: { data: ResumeData }) => {
         {/* === LEFT COLUMN (Narrow) === */}
         <div className="w-[35%] flex flex-col gap-8 border-r-2 border-slate-200 pr-6">
             
-            {/* Education */}
+            {/* Education wrapped in resume-section */}
             {education && education.length > 0 && (
-                <div>
+                <div className="resume-section">
                     <h3 className="font-serif font-bold text-lg mb-4" style={{ color: themeColor }}>Education:</h3>
                     <div className="space-y-4">
                         {education.map(edu => (
@@ -114,9 +136,9 @@ export const TemplateBasic2 = ({ data }: { data: ResumeData }) => {
                 </div>
             )}
 
-            {/* Certificates */}
+            {/* Certificates wrapped in resume-section */}
             {certificates && certificates.length > 0 && (
-                <div>
+                <div className="resume-section">
                     <h3 className="font-serif font-bold text-lg mb-4" style={{ color: themeColor }}>Certificates:</h3>
                     <div className="space-y-4">
                         {certificates.map(cert => (
@@ -133,9 +155,9 @@ export const TemplateBasic2 = ({ data }: { data: ResumeData }) => {
                 </div>
             )}
 
-            {/* Skills */}
+            {/* Skills wrapped in resume-section */}
             {skills && skills.length > 0 && (
-                <div>
+                <div className="resume-section">
                     <h3 className="font-serif font-bold text-lg mb-4" style={{ color: themeColor }}>Skills:</h3>
                     <ul className="list-disc list-outside ml-4 text-[13px] text-slate-700 space-y-2 font-medium">
                         {skills.map((skill, i) => (
@@ -145,9 +167,9 @@ export const TemplateBasic2 = ({ data }: { data: ResumeData }) => {
                 </div>
             )}
 
-            {/* Languages */}
+            {/* Languages wrapped in resume-section */}
             {languages && languages.length > 0 && (
-                <div>
+                <div className="resume-section">
                     <h3 className="font-serif font-bold text-lg mb-4" style={{ color: themeColor }}>Languages:</h3>
                     <div className="flex flex-col gap-2 ml-1">
                         {languages.map((lang, i) => (
@@ -159,26 +181,14 @@ export const TemplateBasic2 = ({ data }: { data: ResumeData }) => {
                     </div>
                 </div>
             )}
-
-             {/* Hobbies */}
-             {hobbies && hobbies.length > 0 && (
-                <div>
-                    <h3 className="font-serif font-bold text-lg mb-4" style={{ color: themeColor }}>Hobbies:</h3>
-                    <ul className="list-disc list-outside ml-4 text-[13px] text-slate-700 space-y-2">
-                        {hobbies.map((hobby, i) => (
-                            <li key={i} className="marker:text-slate-400">{hobby}</li>
-                        ))}
-                    </ul>
-                </div>
-            )}
         </div>
 
         {/* === RIGHT COLUMN (Wide) === */}
         <div className="w-[65%] flex flex-col gap-8">
             
-            {/* About Me */}
+            {/* About Me wrapped in resume-section */}
             {personalInfo.summary && (
-                <div className="bg-slate-50 p-4 rounded-lg border-l-4 shadow-sm" style={{ borderLeftColor: themeColor }}>
+                <div className="resume-section bg-slate-50 p-4 rounded-lg border-l-4 shadow-sm" style={{ borderLeftColor: themeColor }}>
                     <h3 className="font-serif font-bold text-lg mb-2" style={{ color: themeColor }}>About Me:</h3>
                     <p className="text-[13px] leading-relaxed text-slate-700 text-justify">
                         {personalInfo.summary}
@@ -186,13 +196,13 @@ export const TemplateBasic2 = ({ data }: { data: ResumeData }) => {
                 </div>
             )}
 
-            {/* Work Experience */}
+            {/* Work Experience wrapped in resume-section */}
             {experience && experience.length > 0 && (
-                <div>
+                <div className="resume-section">
                     <h3 className="font-serif font-bold text-lg mb-6" style={{ color: themeColor }}>Work Experience:</h3>
                     <div className="space-y-8">
                         {experience.map(exp => (
-                            <div key={exp.id}>
+                            <div key={exp.id} className="mb-4">
                                 <h4 className="font-bold text-[13px] text-slate-900 flex items-center gap-2">
                                     <span className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: themeColor }}></span>
                                     {exp.jobTitle} - <span className="text-slate-600 font-normal">{exp.employer}</span>
@@ -209,13 +219,13 @@ export const TemplateBasic2 = ({ data }: { data: ResumeData }) => {
                 </div>
             )}
 
-            {/* Projects */}
+            {/* Projects wrapped in resume-section */}
             {projects && projects.length > 0 && (
-                <div>
+                <div className="resume-section">
                     <h3 className="font-serif font-bold text-lg mb-6" style={{ color: themeColor }}>Key Projects:</h3>
                     <div className="space-y-8">
                         {projects.map(proj => (
-                            <div key={proj.id}>
+                            <div key={proj.id} className="mb-4">
                                 <div className="flex justify-between items-baseline mb-1 pl-4">
                                     <h4 className="font-bold text-[13px] text-slate-900 underline decoration-slate-200 underline-offset-4">
                                         {proj.projectName}

@@ -48,7 +48,7 @@ import { TemplatePro2 } from "@/components/templates/TemplatePro2";
 import { TEMPLATE_CONFIG } from "@/config/templateConfig";
 import { RESUME_TEMPLATES } from "@/data/templates";
 
-const THEME_COLORS =[
+const THEME_COLORS = [
   "#1a4c78",
   "#2e5a7b",
   "#4a6e8d",
@@ -78,35 +78,40 @@ const COMPONENT_MAP: Record<string, any> = {
   default: TemplateCorp1,
 };
 
-const PHASES =[
+const PHASES = [
   {
     id: "personal",
     title: "Personal Details",
-    subtitle: "Users who added phone number and email received 64% more positive feedback.",
+    subtitle:
+      "Users who added phone number and email received 64% more positive feedback.",
     next: "Employment History",
   },
   {
     id: "experience",
     title: "Employment History",
-    subtitle: "Show your relevant experience (last 10 years). Use bullet points.",
+    subtitle:
+      "Show your relevant experience (last 10 years). Use bullet points.",
     next: "Education",
   },
   {
     id: "education",
     title: "Education",
-    subtitle: "A varied education sums up the value your background brings to the job.",
+    subtitle:
+      "A varied education sums up the value your background brings to the job.",
     next: "Skills & Extras",
   },
   {
     id: "projects",
     title: "Projects",
-    subtitle: "Showcase your best work, side projects, or open-source contributions.",
+    subtitle:
+      "Showcase your best work, side projects, or open-source contributions.",
     next: "Skills & Extras",
   },
   {
     id: "skills",
     title: "Skills & Extras",
-    subtitle: "Choose 5 important skills. Make sure they match the job listing keywords.",
+    subtitle:
+      "Choose 5 important skills. Make sure they match the job listing keywords.",
     next: "Review & Download",
   },
 ];
@@ -126,22 +131,22 @@ export default function BuilderClient() {
     COMPONENT_MAP[templateId] || COMPONENT_MAP["default"];
   const templateConfig = TEMPLATE_CONFIG[templateId] || { hasPhoto: true };
 
-  const[currentStep, setCurrentStep] = useState(0);
+  const [currentStep, setCurrentStep] = useState(0);
   const [showMobilePreview, setShowMobilePreview] = useState(false);
   const [showPalettePanel, setShowPalettePanel] = useState(false);
-  const[downloadFormat, setDownloadFormat] = useState<"pdf" | "docx">("pdf");
-  
+  const [downloadFormat, setDownloadFormat] = useState<"pdf" | "docx">("pdf");
+
   // Modal states
   const [showFormatModal, setShowFormatModal] = useState(false);
-  const[showDownloadModal, setShowDownloadModal] = useState(false); // Used for "Get Credits" Upsell
-  const[showAiModal, setShowAiModal] = useState(false);
+  const [showDownloadModal, setShowDownloadModal] = useState(false); // Used for "Get Credits" Upsell
+  const [showAiModal, setShowAiModal] = useState(false);
   const [showUpsellModal, setShowUpsellModal] = useState(false);
 
   // Loaders
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [isCheckingAccess, setIsCheckingAccess] = useState(false); // Verifying DB unlock before showing Format Picker
 
-  const[userBalances, setUserBalances] = useState({
+  const [userBalances, setUserBalances] = useState({
     corporate: 0,
     creative: 0,
     basic: 0,
@@ -242,10 +247,10 @@ export default function BuilderClient() {
               [data.creditTypeUsed]: Math.max(0, prev[data.creditTypeUsed] - 1),
             }));
           }
-          setShowFormatModal(true); 
+          setShowFormatModal(true);
         } else if (data.status === "payment_required") {
           // Failed Paywall Verification -> Redirect to Get Credits Modal
-          setShowDownloadModal(true); 
+          setShowDownloadModal(true);
         } else {
           alert(data.error || "Download check failed");
         }
@@ -323,7 +328,7 @@ export default function BuilderClient() {
       case 3:
         return (
           <ProjectsForm
-            items={resumeData.projects ||[]}
+            items={resumeData.projects || []}
             onAdd={() => handlers.addListItem("projects")}
             onRemove={(id) => handlers.removeListItem("projects", id)}
             onUpdate={(id, f, v) =>
@@ -349,7 +354,6 @@ export default function BuilderClient() {
 
   return (
     <div className="flex h-screen bg-white overflow-hidden font-sans relative">
-      
       {/* --- LEFT: EDITOR PANE --- */}
       <div
         className={`w-full md:w-[50%] lg:w-[45%] xl:w-[40%] flex flex-col border-r border-gray-200 z-10 bg-white transition-all ${showMobilePreview ? "hidden md:flex" : "flex"}`}
@@ -437,7 +441,9 @@ export default function BuilderClient() {
             className="px-6 py-3 bg-[#0086FF] hover:bg-[#0070d6] active:scale-95 text-white rounded-xl font-bold shadow-lg shadow-blue-500/30 transition-all flex items-center gap-2 disabled:opacity-70 disabled:pointer-events-none"
           >
             {isCheckingAccess ? (
-              <><Loader2 size={18} className="animate-spin" /> Checking Access</>
+              <>
+                <Loader2 size={18} className="animate-spin" /> Checking Access
+              </>
             ) : currentStep === PHASES.length - 1 ? (
               "Finish & Download"
             ) : (
@@ -465,61 +471,19 @@ export default function BuilderClient() {
           <SaveStatusIndicator />
         </div>
 
-        <div className="origin-top transition-transform duration-300 transform scale-[0.45] sm:scale-[0.55] md:scale-[0.50] lg:scale-[0.65] xl:scale-[0.85] 2xl:scale-100 flex flex-col items-center pb-32">
-          <div className="bg-white w-[794px] min-h-[1123px] shadow-2xl overflow-hidden">
+       <div className="origin-top transition-transform duration-300 transform scale-[0.55] sm:scale-[0.65] md:scale-[0.70] lg:scale-[0.80] xl:scale-[0.90] 2xl:scale-100 flex flex-col items-center pb-32">
+          {/* REMOVED overflow-hidden, CHANGED px to mm */}
+          <div className="bg-white w-[210mm] min-h-[297mm] shadow-2xl relative">
             <SelectedTemplate data={resumeData} />
-          </div>
 
-          <div className="mt-8 flex justify-center w-full z-50 origin-top scale-[2.22] sm:scale-[1.81] md:scale-[2.0] lg:scale-[1.53] xl:scale-[1.17] 2xl:scale-100">
-            <div className="relative group">
-              <button
-                onClick={() => setShowPalettePanel(!showPalettePanel)}
-                className="w-14 h-14 rounded-full shadow-2xl flex items-center justify-center transition-transform hover:scale-110 ring-4 ring-white"
-                style={{ backgroundColor: resumeData.themeColor || "#1a4c78" }}
-                title="Change Color Theme"
-              >
-                <Palette size={24} className="text-white drop-shadow-md" />
-              </button>
-
-              {showPalettePanel && (
-                <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-4 bg-white p-3 rounded-xl shadow-2xl flex flex-row flex-wrap gap-2 w-[220px] animate-in zoom-in-95 slide-in-from-bottom-2 border border-gray-100">
-                  {THEME_COLORS.map((color) => (
-                    <button
-                      key={color}
-                      onClick={() =>
-                        setResumeData((prev) => ({
-                          ...prev,
-                          themeColor: color,
-                        }))
-                      }
-                      className={`w-8 h-8 rounded-full shadow-sm hover:scale-110 transition border border-gray-100 ${
-                        resumeData.themeColor === color
-                          ? "ring-2 ring-blue-500 ring-offset-1"
-                          : ""
-                      }`}
-                      style={{ backgroundColor: color }}
-                    />
-                  ))}
-                  <div className="w-full h-px bg-gray-100 my-1"></div>
-                  <div className="relative w-8 h-8 rounded-full overflow-hidden cursor-pointer shadow-sm hover:scale-110 transition border border-gray-200 mx-auto bg-linear-to-tr from-blue-400 via-purple-400 to-red-400">
-                    <input
-                      type="color"
-                      value={resumeData.themeColor || "#1a4c78"}
-                      onChange={(e) =>
-                        setResumeData((prev) => ({
-                          ...prev,
-                          themeColor: e.target.value,
-                        }))
-                      }
-                      className="absolute -top-4 -left-4 w-16 h-16 cursor-pointer opacity-0"
-                    />
-                    <Plus
-                      size={14}
-                      className="absolute inset-0 m-auto text-white pointer-events-none drop-shadow-md"
-                    />
-                  </div>
-                </div>
-              )}
+            {/* Visual Page Break Indicator - Set to 294mm (3mm safety buffer) */}
+            <div
+              className="absolute left-[-100px] right-[-100px] border-t-2 border-dashed border-red-300 pointer-events-none"
+              style={{ top: "294mm" }}
+            >
+              <span className="absolute left-[100px] -top-6 bg-red-100 text-red-600 px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider">
+                Page 1 Cut-off
+              </span>
             </div>
           </div>
         </div>
@@ -580,7 +544,8 @@ export default function BuilderClient() {
                   Word Document (.docx)
                 </div>
                 <div className="text-[13px] text-slate-500 mt-0.5">
-                  Downloads as an ATS-optimized, simple plain-text layout for strict job portals.
+                  Downloads as an ATS-optimized, simple plain-text layout for
+                  strict job portals.
                 </div>
               </button>
             </div>
