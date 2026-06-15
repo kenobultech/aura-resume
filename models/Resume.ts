@@ -1,4 +1,3 @@
-// models/Resume.ts
 import mongoose, { Schema, model, models } from 'mongoose';
 
 const ResumeSchema = new Schema({
@@ -49,6 +48,17 @@ const ResumeSchema = new Schema({
     city: String,
     startDate: String,
     endDate: String,
+    description: String,
+  }],
+
+  // --- ADDED PROJECTS ---
+  projects:[{
+    id: String,
+    projectName: String,
+    role: String,
+    startDate: String,
+    endDate: String,
+    link: String,
     description: String,
   }],
 
