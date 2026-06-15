@@ -188,18 +188,6 @@ export const TemplateFree2 = ({ data }: { data: ResumeData }) => {
             </div>
         )}
 
-        {/* --- FOOTER --- */}
-        <div className="mt-auto pt-6 flex justify-between items-end resume-section">
-            <div className="text-[11px] font-bold space-y-2" style={{ color: themeColor }}>
-                <p>Place: <span className="font-medium text-slate-800 ml-1">{personalInfo.city || "Nairobi, Kenya"}</span></p>
-                <p>Date: <span className="inline-block w-24 border-b ml-1" style={{ borderColor: themeColor }}></span></p>
-            </div>
-            <div className="text-[11px] font-bold text-center" style={{ color: themeColor }}>
-                <div className="w-32 border-b mb-1 opacity-30 mx-auto" style={{ borderColor: themeColor }}></div>
-                <p className="uppercase tracking-widest text-[10px]">({personalInfo.firstName} {personalInfo.lastName})</p>
-            </div>
-        </div>
-
       </div>
     </div>
   );
