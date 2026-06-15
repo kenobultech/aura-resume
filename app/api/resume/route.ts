@@ -1,4 +1,3 @@
-// app/api/resume/route.ts
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
@@ -27,7 +26,6 @@ export async function GET(req: Request) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    // 1. FIX: Grab the templateId from the URL query
     const { searchParams } = new URL(req.url);
     const templateId = searchParams.get("templateId");
 
@@ -38,13 +36,11 @@ export async function GET(req: Request) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
 
-    // 2. FIX: Search by BOTH user ID and template ID
     const query: any = { userId: user._id };
     if (templateId) {
       query.templateId = templateId; 
     }
 
-    // This now fetches the specific resume for the selected template
     const resume = await Resume.findOne(query).sort({ updatedAt: -1 });
 
     return NextResponse.json({ resume });
@@ -73,11 +69,10 @@ export async function POST(req: Request) {
 
     const targetTemplateId = body.templateId || 'free-1';
 
-    // 3. CRITICAL FIX: Match by both userId AND templateId
     const resume = await Resume.findOneAndUpdate(
       { 
         userId: user._id, 
-        templateId: targetTemplateId // <--- Now it separates resumes by template!
+        templateId: targetTemplateId 
       }, 
       {
         $set: {
@@ -86,6 +81,7 @@ export async function POST(req: Request) {
           personalInfo: body.personalInfo,
           experience: body.experience,
           education: body.education,
+          projects: body.projects,        // <--- ADDED THIS LINE
           skills: body.skills,
           certificates: body.certificates, 
           languages: body.languages,       
