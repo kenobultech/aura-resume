@@ -1,4 +1,3 @@
-// components/templates/TemplateFree2.tsx
 import React from 'react';
 import { ResumeData } from './ResumeTypes';
 
@@ -19,7 +18,6 @@ export const TemplateFree2 = ({ data }: { data: ResumeData }) => {
     if (!value) return null;
     return (
       <div className="flex text-[12px] mb-1">
-        {/* Reduced width from w-48 to w-32 to save horizontal space */}
         <span className="w-32 font-bold shrink-0 text-[11px] uppercase pt-0.5" style={{ color: themeColor }}>{label}</span>
         <span className="w-4 text-center font-bold" style={{ color: themeColor }}>:</span>
         <span className="flex-1 text-slate-900 font-medium wrap-break-word">{value}</span>
@@ -38,10 +36,8 @@ export const TemplateFree2 = ({ data }: { data: ResumeData }) => {
   };
 
   return (
-    /* 1. FIXED A4 STANDARDS & REMOVED shrink-0 */
     <div className="w-[210mm] min-h-[297mm] bg-white text-slate-900 font-serif p-[10mm] mx-auto flex flex-col relative box-border overflow-visible break-words">
       
-      {/* 2. PRINT STYLES */}
       <style dangerouslySetInnerHTML={{ __html: `
         @media print {
           @page { size: A4; margin: 0 !important; }
@@ -56,7 +52,7 @@ export const TemplateFree2 = ({ data }: { data: ResumeData }) => {
         style={{ borderColor: themeColor }}
       >
         
-        {/* --- TOP HEADER (COMPACT) --- */}
+        {/* --- TOP HEADER --- */}
         <div className="flex justify-between items-start mb-3 resume-section">
             <div className="text-[12px] font-bold leading-tight">
                 <h1 className="text-2xl uppercase mb-1 tracking-tight" style={{ color: themeColor }}>
@@ -95,12 +91,11 @@ export const TemplateFree2 = ({ data }: { data: ResumeData }) => {
             </div>
         )}
 
-        {/* --- PERSONAL INFORMATION (GRID OPTIMIZED) --- */}
+        {/* --- PERSONAL INFORMATION --- */}
         <div className="mb-4 resume-section">
             <h3 className="text-sm font-bold uppercase underline decoration-2 underline-offset-4 mb-3" style={{ color: themeColor, textDecorationColor: themeColor }}>
                 Personal Information
             </h3>
-            {/* Switched to 2-column grid to save massive vertical space */}
             <div className="grid grid-cols-2 gap-x-6 pl-1">
                 <InfoRow label="Nationality" value={personalInfo.country} />
                 {languages && languages.length > 0 && (
@@ -161,6 +156,14 @@ export const TemplateFree2 = ({ data }: { data: ResumeData }) => {
                                 <span className="mt-1.5 w-1.5 h-1.5 rounded-full shrink-0" style={{ backgroundColor: themeColor }}></span>
                                 <span><span className="font-bold uppercase">{proj.projectName}</span> <span className="italic text-slate-500 text-[11px]">({proj.startDate} - {proj.endDate})</span></span>
                             </div>
+                            {/* Render link if it exists */}
+                            {proj.link && (
+                                <div className="pl-4 text-[11px] text-blue-600 hover:underline mb-1">
+                                    <a href={proj.link.startsWith('http') ? proj.link : `https://${proj.link}`} target="_blank" rel="noopener noreferrer">
+                                        {proj.link}
+                                    </a>
+                                </div>
+                            )}
                             {renderBullets(proj.description)}
                         </li>
                     ))}
@@ -168,7 +171,7 @@ export const TemplateFree2 = ({ data }: { data: ResumeData }) => {
             </div>
         )}
 
-        {/* --- OTHER SKILLS (SPACE SAVER) --- */}
+        {/* --- OTHER SKILLS --- */}
         {skills && skills.length > 0 && (
             <div className="mb-4 resume-section">
                 <h3 className="text-sm font-bold uppercase underline decoration-2 underline-offset-4 mb-2" style={{ color: themeColor, textDecorationColor: themeColor }}>
@@ -182,10 +185,10 @@ export const TemplateFree2 = ({ data }: { data: ResumeData }) => {
                         </div>
                     ))}
                 </div>
-        </div>
+            </div>
         )}
 
-        {/* --- FOOTER (COMPACTED) --- */}
+        {/* --- FOOTER --- */}
         <div className="mt-auto pt-6 flex justify-between items-end resume-section">
             <div className="text-[11px] font-bold space-y-2" style={{ color: themeColor }}>
                 <p>Place: <span className="font-medium text-slate-800 ml-1">{personalInfo.city || "Nairobi, Kenya"}</span></p>
